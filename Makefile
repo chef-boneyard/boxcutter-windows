@@ -360,8 +360,8 @@ $(VIRTUALBOX_BOX_DIR)/$(1)$(BOX_SUFFIX): $(1).json
 	$(PACKER) build -only=$(VIRTUALBOX_BUILDER) $(PACKER_VARS) -var "iso_url=$(2)" -var "iso_checksum=$(3)" $(1).json
 
 $(VMWARE_BOX_DIR)/$(1)$(BOX_SUFFIX): $(1).json
-	rm -rf $(VMWARE_OUTPUT)
-	mkdir -p $(VMWARE_BOX_DIR)
+	rm -rf $(VMWARE_OUTPUT)/*
+	test -d $(VMWARE_OUTPUT) || mkdir -p $(VMWARE_BOX_DIR)
 	$(PACKER) build -only=$(VMWARE_BUILDER) $(PACKER_VARS) -var "iso_url=$(2)" -var "iso_checksum=$(3)" $(1).json
 
 $(PARALLELS_BOX_DIR)/$(1)$(BOX_SUFFIX): $(1).json
