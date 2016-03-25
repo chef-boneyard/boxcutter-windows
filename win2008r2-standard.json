@@ -44,8 +44,9 @@
       "remote_username": "{{user `esx_username`}}",
       "remote_password": "{{user `esx_password`}}",
       "remote_datastore": "{{user `datastore`}}",
-      "output_directory": "output-vmware-iso_{{user `build_id`}}"
-    } ,
+      "output_directory": "output-vmware-iso_{{user `build_id`}}",
+      "keep_registered": "true"
+    },
     {
       "communicator": "winrm",
       "disk_size": "{{user `disk_size`}}",
