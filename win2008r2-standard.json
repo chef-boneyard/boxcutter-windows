@@ -38,8 +38,14 @@
       },
       "winrm_password": "{{user `vm_username`}}",
       "winrm_timeout": "10000s",
-      "winrm_username": "{{user `vm_password`}}"
-    },
+      "winrm_username": "{{user `vm_password`}}",
+      "remote_type": "esx5",
+      "remote_host": "{{user `esx_host`}}",
+      "remote_username": "{{user `esx_username`}}",
+      "remote_password": "{{user `esx_password`}}",
+      "remote_datastore": "{{user `datastore`}}",
+      "output_directory": "output-vmware-iso_{{user `build_id`}}"
+    } ,
     {
       "communicator": "winrm",
       "disk_size": "{{user `disk_size`}}",
@@ -162,6 +168,7 @@
     "esx_host": "{{env `ESX_HOST`}}",
     "esx_username": "{{env `ESX_USERNAME`}}",
     "esx_password": "{{env `ESX_PASSWORD`}}",
-    "datastore": "{{env `DATASTORE`}}"
+    "datastore": "{{env `DATASTORE`}}",
+    "build_id": ""
   }
 }

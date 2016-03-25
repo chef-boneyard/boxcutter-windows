@@ -44,7 +44,8 @@
       "remote_host": "{{user `esx_host`}}",
       "remote_username": "{{user `esx_username`}}",
       "remote_password": "{{user `esx_password`}}",
-      "remote_datastore": "{{user `datastore`}}"
+      "remote_datastore": "{{user `datastore`}}",
+      "output_directory": "output-vmware-iso_{{user `build_id`}}"
     },
     {
       "communicator": "winrm",
@@ -170,6 +171,7 @@
     "esx_host": "{{env `ESX_HOST`}}",
     "esx_username": "{{env `ESX_USERNAME`}}",
     "esx_password": "{{env `ESX_PASSWORD`}}",
-    "datastore": "{{env `DATASTORE`}}"
+    "datastore": "{{env `DATASTORE`}}",
+    "build_id": ""
   }
 }
