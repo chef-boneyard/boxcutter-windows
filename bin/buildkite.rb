@@ -40,7 +40,7 @@ def buildkite_builds
   )
 
   if @response.code.to_i >= 400
-    raise Exception.new("Unexpected response from BuildKite API: #{response.code_type}")
+    raise Exception.new("Unexpected response from BuildKite API: #{@response.code_type}")
   else
     JSON.parse(@response.body)
   end
