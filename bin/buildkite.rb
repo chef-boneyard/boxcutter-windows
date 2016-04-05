@@ -5,10 +5,13 @@ require 'net/http'
 require 'uri'
 require 'logger'
 
+# Environment Varibles which need to be set in the job config
 BUILDKITE_ACCESS_TOKEN = ENV['BUILDKITE_ACCESS_TOKEN']
-BUILDKITE_PROJECT = ENV['BUILDKITE_PROJECT'] ||= 'bento'
+BUILDKITE_PROJECT = ENV['BUILDKITE_PROJECT'] ||= 'vsphere-baker-windows'
+# Environment varibles defined by BuildKite automagically.
 BUILDKITE_ORGANIZATION = ENV['BUILDKITE_ORGANIZATION_SLUG'] ||= 'chef'
 BUILDKITE_BRANCH = ENV['BUILDKITE_BRANCH'] ||= 'master'
+LOGLEVEL = 'debug'
 IGNORED_FILES = %w(
   gitignore
   dummy_metadata
@@ -19,9 +22,12 @@ IGNORED_FILES = %w(
   .md
 ).freeze
 
-logger = Logger.new(STDOUT)
+@logger = Logger.new(STDOUT)
+
+@logger.debug(ENV) if LOGLEVEL == 'debug'
 
 def buildkite_api_uri(args = {})
+  @logger.debug("buildkite_api_uri args: #{args}") if LOGLEVEL == 'debug'
   raise Exception.new('Missing project argument') if args[:project].nil?
   raise Exception.new('Missing endpoint argument') if args[:endpoint].nil?
   raise Exception.new('Missing BuildKite access token environment variable') if BUILDKITE_ACCESS_TOKEN.nil?
@@ -39,8 +45,14 @@ def buildkite_builds
       buildkite_api_uri(project: BUILDKITE_PROJECT, endpoint: 'builds')
   )
 
+  if LOGLEVEL == 'debug'
+    @logger.debug(@response)
+    @logger.debug(@response.code)
+    @logger.debug(@response.body)
+  end
+
   if @response.code.to_i >= 400
-    raise Exception.new("Unexpected response from BuildKite API: #{response.code_type}")
+    raise Exception.new("Unexpected response from BuildKite API: #{@response.code_type}")
   else
     JSON.parse(@response.body)
   end
@@ -102,7 +114,7 @@ buildlist.concat(changed_files_since_last_passed_build.select { |b| b.include?('
 buildlist.collect! { |b| b.gsub!('.json', '') }
 
 buildlist.each do |template|
-  logger.info("Building #{template}...")
+  @logger.info("Building #{template}...")
   Process.spawn("make vmware/#{template}")
 end
 
