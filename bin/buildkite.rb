@@ -8,6 +8,7 @@ require 'logger'
 BUILDKITE_ACCESS_TOKEN = ENV['BUILDKITE_ACCESS_TOKEN']
 BUILDKITE_PROJECT = ENV['BUILDKITE_PROJECT'] ||= 'bento'
 BUILDKITE_ORGANIZATION = ENV['BUILDKITE_ORGANIZATION_SLUG'] ||= 'chef'
+BUILDKITE_BRANCH = ENV['BUILDKITE_BRANCH'] ||= 'master'
 IGNORED_FILES = %w(
   gitignore
   dummy_metadata
@@ -33,25 +34,31 @@ end
 
 # Returns an array of builds hashes for the environment defined project.
 def buildkite_builds
-  response = Net::HTTP.get_response(
+  @response ||= Net::HTTP.get_response(
       buildkite_api_uri(project: BUILDKITE_PROJECT, endpoint: 'builds')
   )
 
-  if response.code.to_i >= 400
+  if @response.code.to_i >= 400
     raise Exception.new("Unexpected response from BuildKite API: #{response.code_type}")
   else
-    JSON.parse(response.body)
+    JSON.parse(@response.body)
   end
 end
 
-# Returns a string
+# Finds the last passed build for a given working branch, and returns
+# a SHA1 git hash as a string. If the branch is a new branch, this returns
+# the string 'master' as a point of reference to determine changes.
 def last_passed_build_git_hash
   git_hash = ''
 
   buildkite_builds.map do |build|
-    if build['state'] == 'passed'
+    if build['state'] == 'passed' && build['branch'] == BUILDKITE_BRANCH && commit_exits?(build['commit'])
       git_hash = build['commit']
       break
+    else
+      # Assume if there is no passed builds for a given branch, it is a net new
+      # branch forked off of master.
+      git_hash = 'master'
     end
   end
 
@@ -62,6 +69,13 @@ def last_passed_build_git_hash
   end
 end
 
+# Check to ensure the commit hash exists. This typically returns false when
+# buildkite gives us a commit hash from a previously successful build and a
+# subsequent force-push is done to rewrite history. If the commit ID exists,
+# this will return true.
+def commit_exits?(commit)
+  system("git cat-file commit #{commit}")
+end
 
 # Return an array of files changed since the last successful build.
 # Sorry for the long function name.
