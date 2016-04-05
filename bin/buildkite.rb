@@ -24,6 +24,7 @@ logger = Logger.new(STDOUT)
 def buildkite_api_uri(args = {})
   raise Exception.new('Missing project argument') if args[:project].nil?
   raise Exception.new('Missing endpoint argument') if args[:endpoint].nil?
+  raise Exception.new('Missing BuildKite access token environment variable') if BUILDKITE_ACCESS_TOKEN.nil?
 
   URI::HTTPS.build(
     host:   'api.buildkite.com',
