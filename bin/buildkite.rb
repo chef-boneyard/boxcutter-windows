@@ -113,12 +113,19 @@ buildlist = []
 
 buildlist.concat(changed_files_since_last_passed_build.select { |b| b.include?('.json') })
 buildlist.collect! { |b| b.gsub!('.json', '') }
-# Create a space delimited string of make targets prefixed with vmware/
-targets = buildlist.each { |template| template.prepend('vmware/') }.join(' ')
-# Run make with parallelism, and let make do the thread management.
 if buildlist.empty?
   @logger.info("No template changes found to build.")
 else
-  @logger.info("Building #{targets}...")
-  system("make -j10 #{targets}") unless buildlist.empty?
+  # We need to do a more complex threading implementation to be able to build
+  # these in parallel as Packer has a bug in which it fails when an output directory
+  # already exists on the system. Attempting to use make to parallelize this will
+  # result in the same
+  buildlist.each do |template|
+    @logger.info("Building #{template}...")
+    # Create a space delimited string of make targets prefixed with vmware/
+    # when invoking the make command.
+    unless system("make #{template.prepend('vmware/')}")
+      Kernel.exit(1)
+    end
+  end
 end
