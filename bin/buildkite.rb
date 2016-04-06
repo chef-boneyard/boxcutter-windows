@@ -116,6 +116,9 @@ buildlist.collect! { |b| b.gsub!('.json', '') }
 # Create a space delimited string of make targets prefixed with vmware/
 targets = buildlist.each { |template| template.prepend('vmware/') }.join(' ')
 # Run make with parallelism, and let make do the thread management.
-@logger.info("Building #{targets}...")
-system("make -j10 #{targets}") unless buildlist.empty?
-
+if buildlist.empty?
+  @logger.info("No template changes found to build.")
+else
+  logger.info("Building #{targets}...")
+  system("make -j10 #{targets}") unless buildlist.empty?
+end
