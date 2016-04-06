@@ -125,7 +125,7 @@ else
     # Create a space delimited string of make targets prefixed with vmware/
     # when invoking the make command.
     unless system("make #{template.prepend('vmware/')}")
-      Kernel.exit
+      Kernel.exit(1)
     end
   end
 end
