@@ -41,9 +41,12 @@ end
 
 # Returns an array of builds hashes for the environment defined project.
 def buildkite_builds
-  @response ||= Net::HTTP.get_response(
-      buildkite_api_uri(project: BUILDKITE_PROJECT, endpoint: 'builds')
-  )
+  uri = buildkite_api_uri(project: BUILDKITE_PROJECT, endpoint: 'builds')
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = true
+
+  request ||= Net::HTTP::Get.new(uri.request_uri)
+  @response ||= http.request(request)
 
   if LOGLEVEL == 'debug'
     @logger.debug(@response)
