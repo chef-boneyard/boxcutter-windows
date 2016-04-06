@@ -117,4 +117,5 @@ buildlist.collect! { |b| b.gsub!('.json', '') }
 targets = buildlist.each { |template| template.prepend('vmware/') }.join(' ')
 # Run make with parallelism, and let make do the thread management.
 @logger.info("Building #{targets}...")
-system("make -j10 #{targets}") unless targets.nil?
+system("make -j10 #{targets}") unless buildlist.empty?
+
