@@ -124,6 +124,8 @@ else
     @logger.info("Building #{template}...")
     # Create a space delimited string of make targets prefixed with vmware/
     # when invoking the make command.
-    system("make #{template.prepend('vmware/')}")
+    unless system("make #{template.prepend('vmware/')}")
+      Kernel.exit
+    end
   end
 end
