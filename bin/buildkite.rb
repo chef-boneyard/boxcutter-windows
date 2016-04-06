@@ -11,7 +11,6 @@ BUILDKITE_PROJECT = ENV['BUILDKITE_PROJECT'] ||= 'vsphere-baker-windows'
 # Environment varibles defined by BuildKite automagically.
 BUILDKITE_ORGANIZATION = ENV['BUILDKITE_ORGANIZATION_SLUG'] ||= 'chef'
 BUILDKITE_BRANCH = ENV['BUILDKITE_BRANCH'] ||= 'master'
-LOGLEVEL = 'debug'
 IGNORED_FILES = %w(
   gitignore
   dummy_metadata
@@ -23,11 +22,12 @@ IGNORED_FILES = %w(
 ).freeze
 
 @logger = Logger.new(STDOUT)
+@logger.level = Logger::INFO
 
-@logger.debug(ENV) if LOGLEVEL == 'debug'
+@logger.debug(ENV)
 
 def buildkite_api_uri(args = {})
-  @logger.debug("buildkite_api_uri args: #{args}") if LOGLEVEL == 'debug'
+  @logger.debug("buildkite_api_uri args: #{args}")
   raise Exception.new('Missing project argument') if args[:project].nil?
   raise Exception.new('Missing endpoint argument') if args[:endpoint].nil?
   raise Exception.new('Missing BuildKite access token environment variable') if BUILDKITE_ACCESS_TOKEN.nil?
@@ -41,15 +41,16 @@ end
 
 # Returns an array of builds hashes for the environment defined project.
 def buildkite_builds
-  @response ||= Net::HTTP.get_response(
-      buildkite_api_uri(project: BUILDKITE_PROJECT, endpoint: 'builds')
-  )
+  uri = buildkite_api_uri(project: BUILDKITE_PROJECT, endpoint: 'builds')
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = true
 
-  if LOGLEVEL == 'debug'
-    @logger.debug(@response)
-    @logger.debug(@response.code)
-    @logger.debug(@response.body)
-  end
+  request ||= Net::HTTP::Get.new(uri.request_uri)
+  @response ||= http.request(request)
+
+  @logger.debug(@response)
+  @logger.debug(@response.code)
+  @logger.debug(@response.body)
 
   if @response.code.to_i >= 400
     raise Exception.new("Unexpected response from BuildKite API: #{@response.code_type}")
@@ -112,9 +113,8 @@ buildlist = []
 
 buildlist.concat(changed_files_since_last_passed_build.select { |b| b.include?('.json') })
 buildlist.collect! { |b| b.gsub!('.json', '') }
-
-buildlist.each do |template|
-  @logger.info("Building #{template}...")
-  Process.spawn("make vmware/#{template}")
-end
-
+# Create a space delimited string of make targets prefixed with vmware/
+targets = buildlist.each { |template| template.prepend('vmware/') }.join(' ')
+# Run make with parallelism, and let make do the thread management.
+@logger.info("Building #{targets}...")
+system("make -j10 #{targets}") unless targets.nil?
