@@ -119,6 +119,6 @@ targets = buildlist.each { |template| template.prepend('vmware/') }.join(' ')
 if buildlist.empty?
   @logger.info("No template changes found to build.")
 else
-  logger.info("Building #{targets}...")
+  @logger.info("Building #{targets}...")
   system("make -j10 #{targets}") unless buildlist.empty?
 end
