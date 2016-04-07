@@ -14,8 +14,8 @@
         "floppy/powerconfig.bat",
         "floppy/win2012r2-standard/Autounattend.xml",
         "floppy/zz-start-sshd.cmd",
-        "floppy/microsoft-updates.bat",
-        "floppy/win-updates.ps1"
+        "floppy/update.bat",
+        "floppy/_post_update_install.bat"
       ],
       "guest_os_type": "windows8srv-64",
       "headless": "{{ user `headless` }}",
