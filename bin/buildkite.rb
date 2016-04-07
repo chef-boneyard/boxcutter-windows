@@ -11,6 +11,8 @@ BUILDKITE_PROJECT = ENV['BUILDKITE_PROJECT'] ||= 'vsphere-baker-windows'
 # Environment varibles defined by BuildKite automagically.
 BUILDKITE_ORGANIZATION = ENV['BUILDKITE_ORGANIZATION_SLUG'] ||= 'chef'
 BUILDKITE_BRANCH = ENV['BUILDKITE_BRANCH'] ||= 'master'
+# Space delimeted list of OS platforms to build regardless of changes.
+FORCE_BUILD_LIST= ENV['FORCE_BUILD_LIST'] || ''
 IGNORED_FILES = %w(
   gitignore
   dummy_metadata
@@ -110,9 +112,10 @@ end
 
 # Compile the list of platforms whose boxes will be rebuilt.
 buildlist = []
-
+buildlist = FORCE_BUILD_LIST.split(' ') unless FORCE_BUILD_LIST.empty?
 buildlist.concat(changed_files_since_last_passed_build.select { |b| b.include?('.json') })
 buildlist.collect! { |b| b.gsub!('.json', '') }
+
 if buildlist.empty?
   @logger.info("No template changes found to build.")
 else
