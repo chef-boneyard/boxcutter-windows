@@ -17,7 +17,9 @@
         "floppy/zz-start-sshd.cmd",
         "floppy/upgrade-wua.bat",
         "floppy/update.bat",
-        "floppy/_post_update_install.bat"
+        "floppy/_post_update_install.bat",
+        "floppy/upgrade-wmf.bat",
+        "floppy/wget.ps1"
       ],
       "guest_os_type": "windows7srv-64",
       "headless": "{{ user `headless` }}",

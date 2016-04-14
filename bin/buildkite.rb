@@ -11,7 +11,7 @@ BUILDKITE_PROJECT = ENV['BUILDKITE_PROJECT'] ||= 'vsphere-baker-windows'
 # Environment varibles defined by BuildKite automagically.
 BUILDKITE_ORGANIZATION = ENV['BUILDKITE_ORGANIZATION_SLUG'] ||= 'chef'
 BUILDKITE_BRANCH = ENV['BUILDKITE_BRANCH'] ||= 'master'
-# Space delimeted list of OS platforms to build regardless of changes.
+# Space delimited list of Packer JSON files to build regardless of changes.
 FORCE_BUILD_LIST= ENV['FORCE_BUILD_LIST'] || ''
 IGNORED_FILES = %w(
   gitignore
