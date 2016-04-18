@@ -14,7 +14,7 @@ BUILDKITE_BRANCH = ENV['BUILDKITE_BRANCH'] ||= 'master'
 # Space delimited list of Packer JSON files to build regardless of changes.
 FORCE_BUILD_LIST= ENV['FORCE_BUILD_LIST'] || ''
 IGNORED_FILES = %w(
-  gitignore
+  .gitignore
   dummy_metadata
   bin/buildkite.rb
   bin/compress.py
@@ -54,11 +54,8 @@ def buildkite_builds
   @logger.debug(@response.code)
   @logger.debug(@response.body)
 
-  if @response.code.to_i >= 400
-    raise Exception.new("Unexpected response from BuildKite API: #{@response.code_type}")
-  else
-    JSON.parse(@response.body)
-  end
+  @response.value
+  JSON.parse(@response.body)
 end
 
 # Finds the last passed build for a given working branch, and returns
