@@ -62,25 +62,25 @@
                 <LocalAccounts>
                     <LocalAccount wcm:action="add">
                         <Password>
-                            <Value>vagrant</Value>
+                            <Value>build</Value>
                             <PlainText>true</PlainText>
                         </Password>
-                        <Description>Vagrant User</Description>
-                        <DisplayName>vagrant</DisplayName>
+                        <Description>Build User</Description>
+                        <DisplayName>build</DisplayName>
                         <Group>Administrators</Group>
-                        <Name>vagrant</Name>
+                        <Name>build</Name>
                     </LocalAccount>
                 </LocalAccounts>
                 <AdministratorPassword>
-                    <Value>vagrant</Value>
+                    <Value>build</Value>
                     <PlainText>true</PlainText>
                 </AdministratorPassword>
             </UserAccounts>
             <AutoLogon>
                 <Enabled>true</Enabled>
-                <Username>vagrant</Username>
+                <Username>build</Username>
                 <Password>
-                    <Value>vagrant</Value>
+                    <Value>build</Value>
                     <PlainText>true</PlainText>
                 </Password>
             </AutoLogon>

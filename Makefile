@@ -59,6 +59,10 @@ WIN81_X64_PRO_CHECKSUM ?= e50a6f0f08e933f25a71fbc843827fe752ed0365
 WIN81_X86_PRO ?= iso/en_windows_8.1_professional_vl_with_update_x86_dvd_4065201.iso
 WIN81_X86_PRO_CHECKSUM ?= c2d6f5d06362b7cb17dfdaadfb848c760963b254
 
+# Username / Password Defaults
+VM_USERNAME ?= vagrant
+VM_PASSWORD ?= vagrant
+
 # Use buildkite UUID or if the env varible is not set, generate one.
 # This ensures we do not have build collisions.
 BUILD_UUID := $(shell uuidgen)

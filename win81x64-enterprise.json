@@ -13,7 +13,9 @@
         "floppy/passwordchange.bat",
         "floppy/powerconfig.bat",
         "floppy/win81x64-enterprise/Autounattend.xml",
-        "floppy/zz-start-sshd.cmd"
+        "floppy/zz-start-sshd.cmd",
+        "floppy/update.bat",
+        "floppy/_post_update_install.bat"
       ],
       "guest_os_type": "windows8-64",
       "headless": "{{ user `headless` }}",
@@ -37,7 +39,7 @@
         "ethernet0.wakeOnPcktRcv": "FALSE"
       },
       "winrm_password": "{{user `vm_username`}}",
-      "winrm_timeout": "10000s",
+      "winrm_timeout": "8h",
       "winrm_username": "{{user `vm_password`}}",
       "remote_type": "esx5",
       "remote_host": "{{user `esx_host`}}",
@@ -168,8 +170,8 @@
     "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
     "update": "true",
     "version": "0.1.0",
-    "vm_username": "vagrant",
-    "vm_password": "vagrant",
+    "vm_username": "{{env `VM_USERNAME`}}",
+    "vm_password": "{{env `VM_PASSWORD`}}",
     "esx_host": "{{env `ESX_HOST`}}",
     "esx_username": "{{env `ESX_USERNAME`}}",
     "esx_password": "{{env `ESX_PASSWORD`}}",
