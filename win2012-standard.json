@@ -15,7 +15,9 @@
         "floppy/powerconfig.bat",
         "floppy/unzip.vbs",
         "floppy/win2012-standard/Autounattend.xml",
-        "floppy/zz-start-sshd.cmd"
+        "floppy/zz-start-sshd.cmd",
+        "floppy/update.bat",
+        "floppy/_post_update_install.bat"
       ],
       "guest_os_type": "windows8srv-64",
       "headless": "{{ user `headless` }}",
@@ -28,12 +30,25 @@
       "vm_name": "win2012-standard",
       "vmx_data": {
         "cpuid.coresPerSocket": "1",
-        "memsize": "1536",
-        "numvcpus": "1"
+        "memsize": "3840",
+        "numvcpus": "2",
+        "ethernet0.present": "TRUE",
+        "ethernet0.startConnected": "TRUE",
+        "ethernet0.networkName": "VM Network",
+        "ethernet0.addressType": "generated",
+        "ethernet0.generatedAddressOffset": "0",
+        "ethernet0.wakeOnPcktRcv": "FALSE"
       },
-      "winrm_password": "vagrant",
-      "winrm_timeout": "10000s",
-      "winrm_username": "vagrant"
+      "winrm_password": "{{user `vm_username`}}",
+      "winrm_timeout": "8h",
+      "winrm_username": "{{user `vm_password`}}",
+      "remote_type": "esx5",
+      "remote_host": "{{user `esx_host`}}",
+      "remote_username": "{{user `esx_username`}}",
+      "remote_password": "{{user `esx_password`}}",
+      "remote_datastore": "{{user `datastore`}}",
+      "output_directory": "output-vmware-iso_{{user `build_id`}}",
+      "keep_registered": true
     },
     {
       "communicator": "winrm",
@@ -131,15 +146,6 @@
       "winrm_username": "vagrant"
     }
   ],
-  "post-processors": [
-    {
-      "compression_level": 1,
-      "keep_input_artifact": false,
-      "output": "box/{{.Provider}}/win2012-standard-{{user `cm`}}{{user `cm_version`}}-{{user `version`}}.box",
-      "type": "vagrant",
-      "vagrantfile_template": "tpl/vagrantfile-win2012-standard.tpl"
-    }
-  ],
   "provisioners": [
     {
       "environment_vars": [
@@ -168,6 +174,14 @@
     "iso_url": "iso/en_windows_server_2012_x64_dvd_915478.iso",
     "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
     "update": "true",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "vm_username": "{{env `VM_USERNAME`}}",
+    "vm_password": "{{env `VM_PASSWORD`}}",
+    "esx_host": "{{env `ESX_HOST`}}",
+    "esx_username": "{{env `ESX_USERNAME`}}",
+    "esx_password": "{{env `ESX_PASSWORD`}}",
+    "datastore": "{{env `DATASTORE`}}",
+    "build_id": ""
   }
 }
+
