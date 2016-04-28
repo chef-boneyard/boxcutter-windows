@@ -39,7 +39,7 @@
         "ethernet0.wakeOnPcktRcv": "FALSE"
       },
       "winrm_password": "{{user `vm_username`}}",
-      "winrm_timeout": "8h",
+      "winrm_timeout": "20h",
       "winrm_username": "{{user `vm_password`}}",
       "remote_type": "esx5",
       "remote_host": "{{user `esx_host`}}",
