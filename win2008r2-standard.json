@@ -5,8 +5,6 @@
       "disk_size": "{{user `disk_size`}}",
       "floppy_files": [
         "floppy/00-run-all-scripts.cmd",
-        "floppy/01-install-wget.cmd",
-        "floppy/_download.cmd",
         "floppy/_packer_config.cmd",
         "floppy/disablewinupdate.bat",
         "floppy/fixnetwork.ps1",
@@ -14,12 +12,9 @@
         "floppy/passwordchange.bat",
         "floppy/powerconfig.bat",
         "floppy/win2008r2-standard/Autounattend.xml",
-        "floppy/zz-start-sshd.cmd",
         "floppy/upgrade-wua.bat",
         "floppy/update.bat",
-        "floppy/_post_update_install.bat",
-        "floppy/upgrade-wmf.bat",
-        "floppy/wget.ps1"
+        "floppy/upgrade-wmf.bat"
       ],
       "guest_os_type": "windows7srv-64",
       "headless": "{{ user `headless` }}",
@@ -33,23 +28,12 @@
       "vmx_data": {
         "cpuid.coresPerSocket": "1",
         "memsize": "3840",
-        "numvcpus": "2",
-        "ethernet0.present": "TRUE",
-        "ethernet0.startConnected": "TRUE",
-        "ethernet0.networkName": "VM Network",
-        "ethernet0.addressType": "generated",
-        "ethernet0.generatedAddressOffset": "0",
-        "ethernet0.wakeOnPcktRcv": "FALSE"
+        "numvcpus": "2"
       },
       "winrm_password": "{{user `vm_username`}}",
       "winrm_timeout": "8h",
       "winrm_username": "{{user `vm_password`}}",
-      "remote_type": "esx5",
-      "remote_host": "{{user `esx_host`}}",
-      "remote_username": "{{user `esx_username`}}",
-      "remote_password": "{{user `esx_password`}}",
-      "remote_datastore": "{{user `datastore`}}",
-      "output_directory": "output-vmware-iso_{{user `build_id`}}",
+      "output_directory": "output-vmware-iso",
       "keep_registered": "true"
     },
     {
@@ -178,4 +162,3 @@
     "build_id": ""
   }
 }
-
